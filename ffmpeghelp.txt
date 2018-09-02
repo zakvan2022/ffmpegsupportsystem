@@ -1,0 +1,26 @@
+
+ffmpeg -r 1 -i %1d.jpg out.mp4	// connect 5 images into out.mp4
+
+
+=============================
+join 2 file into 1 file
+============================
+ffmpeg -i input1.mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts intermediate1.ts
+ffmpeg -i input2.mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts intermediate2.ts
+ffmpeg -i "concat:intermediate1.ts|intermediate2.ts" -c copy -bsf:a aac_adtstoasc output.mp4
+
+
+=============================
+Add the text into Video
+this is good site
+http://ffmpeg.shanewhite.co/
+===============================
+ffmpeg -i input.mp4 -filter_complex "[0:v]drawtext=fontfile=Lato-Light.ttf:text='Good morning':fontsize=50:fontcolor=d40a0a:alpha='if(lt(t,2),0,if(lt(t,3),(t-2)/1,if(lt(t,8),1,if(lt(t,9),(1-(t-8))/1,0))))':x=(w-text_w)/2:y=(h-text_h)/2" output.mp4
+
+ffmpeg -f lavfi -i "color=color=yellow, drawtext=enable='gte(t,0)':text=Text1 Text2 Text3 Text4 Text5 Text6 Text7 Text8 Text9 Text10:expansion=normal:fontfile=verdana.ttf: y=h-line_h-120:x=-100*t: fontcolor=white: fontsize=50" -t 20 Output.mp4
+
+ffmpeg -i input.mp4 -vf "[in]fade=t=in:st=0:d=1, fade=t=out:st=19:d=1 [main]; [main] drawtext=fontcolor=white:text='Text1':x=(main_w/2-text_w/2):y=main_h-(text_h*3):fontfile=/System/Library/Fonts/Menlo.ttc:fontsize=40:box=1:boxcolor=black:boxborderw=8,fade=t=in:st=2:d=1, fade=t=out:st=10:d=2 [out]" out.mp4
+
+ffmpeg -i input.mp4 -f lavfi -i nullsrc=s=1920x1080:d=20 -filter_complex "[0:v]fade=type=in:st=0:d=3 [main]; [1:v] drawtext=fontcolor=white:text='Text1':x=(main_w/2-text_w/2):y=main_h-(text_h*3):fontfile=/System/Library/Fonts/Menlo.ttc:fontsize=40:box=1:boxcolor=black:boxborderw=8,fade=t=in:st=0:d=5 [text]; [main][text]overlay" out.mp4
+
+https://github.com/letungit90/ffmpeg_memo
